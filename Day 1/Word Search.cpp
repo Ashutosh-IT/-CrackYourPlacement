@@ -7,45 +7,50 @@ https://leetcode.com/problems/word-search/description/
 class Solution {
 public:
 
-    int row[4] = {0,0,-1,1};
-    int col[4] = {1,-1,0,0};
-
+    int row[4] = {-1,1,0,0};
+    int col[4] = {0,0,-1,1};
+    
     bool valid(int i, int j, int n, int m){
-        return i>=0 && j>=0 && i<n && j<m;
+        return i>=0 && i<n && j>=0 && j<m;
     }
-
-    bool dfs(vector<vector<char>>& board, int n, int m, int i, int j, vector<vector<bool>> &visited, string word, int index){
-        visited[i][j] = true;
-        bool ans = false;
-
-        if(index==word.size()) return true;
-
+    
+    void dfs(vector<vector<char>>& board, int n, int m, int i, int j, bool &ans, int index, string word){
+        if(ans) return;
+        if(index==word.size()-1){
+            ans=true;
+            return;
+        }
+        
+        char temp = board[i][j];
+        board[i][j] = '#';
+        
         for(int k=0; k<4; k++){
             int newR = i+row[k];
             int newC = j+col[k];
-            if(valid(newR,newC,n,m) && !visited[newR][newC] && board[newR][newC] == word[index]){
-                ans = ans || dfs(board,n,m,newR,newC,visited,word,index+1);
+            if(valid(newR,newC,n,m) && board[newR][newC]==word[index+1]){
+                dfs(board,n,m,newR,newC,ans,index+1,word);
             }
         }
-        visited[i][j] = false;
-        return ans;
+        
+        board[i][j] = temp;
     }
-
+    
     bool exist(vector<vector<char>>& board, string word) {
-        int n = board.size();
-        int m = board[0].size();
-
+        // Code here
+        int n=board.size();
+        int m=board[0].size();
+        
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
-                if(board[i][j] == word[0]){
-                    if(word.size() == 1) return true;
-                    vector<vector<bool>> visited(n,vector<bool>(m,false));
-                    if(dfs(board,n,m,i,j,visited,word,1))
-                    return true;
+                if(board[i][j]==word[0]){
+                    bool ans = false;
+                    dfs(board,n,m,i,j,ans,0,word);
+                    if(ans) return true;
                 }
             }
         }
-
+        
         return false;
     }
 };
+
