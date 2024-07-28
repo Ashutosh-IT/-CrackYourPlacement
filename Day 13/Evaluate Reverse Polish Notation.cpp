@@ -6,6 +6,22 @@ https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
 
 class Solution {
 public:
+
+    int stoi(string num){
+        bool negative = false;
+        if(num[0] == '-') negative = true;
+
+        int i = negative ? 1 : 0;
+
+        int ans = 0;
+        while(i<num.size()){
+            ans = ans*10 + (num[i]-'0');
+            i++;
+        }
+
+        return negative ? -ans : ans;
+    }
+
     int evalRPN(vector<string>& tokens) {
 
         int n = tokens.size();
